@@ -11,14 +11,13 @@ public class Livre {
 
     private Connection conn;
 
-    public Livre(Connection conn)
-    {
+    public Livre(Connection conn) {
         this.conn = conn;
     }
 
     public void addToBDD(String titre, String auteur) {
         // Ajout d'un livre à la bilbiothèque
-        String sql = "INSERT INTO livres(titre, auteur) VALUES (?, ?)";
+        String sql = "INSERT INTO Livres(titre, auteur) VALUES (?, ?)";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
             stmt.setString(1, titre);
             stmt.setString(2, auteur);
@@ -30,9 +29,9 @@ public class Livre {
     }
 
     public void afficherTous() {
-        String sql = "SELECT id_livre, titre, auteur FROM livres";
+        String sql = "SELECT id_livre, titre, auteur FROM Livres";
         try (Statement stmt = this.conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("Liste des livres :");
             while (rs.next()) {
@@ -48,7 +47,7 @@ public class Livre {
     }
 
     public void deleteFromBDD(String titre, String auteur) {
-        String sql = "DELETE FROM livres WHERE titre = ? AND auteur = ?";
+        String sql = "DELETE FROM Livres WHERE titre = ? AND auteur = ?";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
 
             stmt.setString(1, titre);
@@ -66,8 +65,7 @@ public class Livre {
         }
     }
 
-    public Integer findId(String titre, String auteur) 
-    {
+    public Integer findId(String titre, String auteur) {
         String sql = "SELECT id_livre FROM Livres WHERE titre = ? AND auteur = ?";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
             stmt.setString(1, titre);
