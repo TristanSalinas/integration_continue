@@ -11,13 +11,11 @@ public class Client {
 
     private Connection conn;
 
-    public Client(Connection conn)
-    {
+    public Client(Connection conn) {
         this.conn = conn;
     }
 
-    public void addToBDD(String nom, String prenom) 
-    {
+    public void addToBDD(String nom, String prenom) {
         // Ajout d'un Client à la bilbiothèque
         String sql = "INSERT INTO Clients(nom, prenom) VALUES (?, ?)";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
@@ -30,11 +28,10 @@ public class Client {
         }
     }
 
-    public void afficherTous() 
-    {
+    public void afficherTous() {
         String sql = "SELECT id_client, nom, prenom FROM Clients";
         try (Statement stmt = conn.createStatement();
-            ResultSet rs = stmt.executeQuery(sql)) {
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             System.out.println("Liste des Clients :");
             while (rs.next()) {
@@ -49,9 +46,8 @@ public class Client {
         }
     }
 
-    public void deleteFromBDD(String nom, String prenom) 
-    {
-        String sql = "DELETE FROM clients WHERE nom = ? AND prenom = ?";
+    public void deleteFromBDD(String nom, String prenom) {
+        String sql = "DELETE FROM Clients WHERE nom = ? AND prenom = ?";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
 
             stmt.setString(1, nom);
@@ -69,8 +65,7 @@ public class Client {
         }
     }
 
-    public Integer findId(String nom, String prenom) 
-    {
+    public Integer findId(String nom, String prenom) {
         String sql = "SELECT id_client FROM Clients WHERE nom = ? AND prenom = ?";
         try (PreparedStatement stmt = this.conn.prepareStatement(sql)) {
             stmt.setString(1, nom);

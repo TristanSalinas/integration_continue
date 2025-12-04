@@ -26,11 +26,10 @@ services:
       DB_USER: root
       DB_PASSWORD: my-secret-pw
     volumes:
-      - ./:/app
+      - ../../:/app
     working_dir: /app
     ports:
       - "8080:8080"
     command: sh -c "mvn clean package -DskipTests && java -cp target/*:target/dependency/* Main"
-
 volumes:
   mysql_data:

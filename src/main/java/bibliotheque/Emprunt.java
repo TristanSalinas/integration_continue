@@ -11,13 +11,11 @@ public class Emprunt {
 
     private Connection conn;
 
-    public Emprunt(Connection conn)
-    {
+    public Emprunt(Connection conn) {
         this.conn = conn;
     }
 
-    public void addToBDD(int idClient, int idLivre, java.time.LocalDate dateEmprunt, int dureeSemaines) 
-    {
+    public void addToBDD(int idClient, int idLivre, java.time.LocalDate dateEmprunt, int dureeSemaines) {
         String addEmpruntSql = "INSERT INTO Emprunts(id_client, id_livre, date_emprunt, date_retour) VALUES (?, ?, ?, ?)";
         String updateLivreSql = "UPDATE Livres SET disponible = FALSE WHERE id_livre = ?";
         try {
@@ -34,8 +32,7 @@ public class Emprunt {
             stmtDisponible.setInt(1, idLivre);
             stmtDisponible.executeUpdate();
 
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -43,7 +40,7 @@ public class Emprunt {
     public void afficherTous() {
         String sql = "SELECT id_emprunt, id_client, id_livre, date_emprunt, date_retour FROM Emprunts";
         try (PreparedStatement stmt = conn.prepareStatement(sql);
-            ResultSet rs = stmt.executeQuery()) {
+                ResultSet rs = stmt.executeQuery()) {
 
             System.out.println("=== Liste des emprunts ===");
             while (rs.next()) {
@@ -54,12 +51,11 @@ public class Emprunt {
                 java.sql.Date dateRetour = rs.getDate("date_retour");
 
                 System.out.println(
-                    "Emprunt #" + idEmprunt +
-                    " | Client: " + idClient +
-                    " | Livre: " + idLivre +
-                    " | Date emprunt: " + dateEmprunt +
-                    " | Date retour: " + (dateRetour != null ? dateRetour : "Non rendu")
-                );
+                        "Emprunt #" + idEmprunt +
+                                " | Client: " + idClient +
+                                " | Livre: " + idLivre +
+                                " | Date emprunt: " + dateEmprunt +
+                                " | Date retour: " + (dateRetour != null ? dateRetour : "Non rendu"));
             }
 
         } catch (SQLException e) {
@@ -68,7 +64,7 @@ public class Emprunt {
     }
 
     public void deleteByLivre(Integer idLivre) throws SQLException {
-        String sql = "DELETE FROM emprunts WHERE id_livre = ?";
+        String sql = "DELETE FROM Emprunts WHERE id_livre = ?";
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             ps.setInt(1, idLivre);
             ps.executeUpdate();
