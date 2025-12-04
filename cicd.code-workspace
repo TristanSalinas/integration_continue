@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"name": "cicd",
+			"path": "../cours_jenkins/cicd"
+		},
+		{
+			"name": "integration_continue",
+			"path": "."
+		}
+	],
+	"settings": {}
+}
