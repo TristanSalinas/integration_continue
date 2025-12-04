@@ -51,19 +51,13 @@ public class ClientTest {
   void testDeleteClient() throws SQLException {
     client.deleteFromBDD("Dupont", "Jean");
     Integer id = client.findId("Dupont", "Jean");
-    System.out.println(id);
     assertNull(id, "Le Client n'a pas été supprimé après insertion !");
   }
 
-  // @Test
-  // void testDeleteLivre() throws SQLException {
-  // livre.deleteFromBDD("TestLivre", "AuteurTest");
-  // Integer id = livre.findId("TestLivre", "AuteurTest");
-  // assertNull(id, "Le livre devrait avoir été supprimé !");
-  // }
-
   @AfterAll
   static void closeConn() throws SQLException {
+    Statement stmt = conn.createStatement();
+    stmt.execute("DELETE FROM Clients");
     conn.close();
   }
 }

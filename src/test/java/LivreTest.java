@@ -1,5 +1,6 @@
 import bibliotheque.Livre;
 
+import java.sql.Statement;
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -37,6 +38,8 @@ public class LivreTest {
 
     @AfterAll
     static void closeConn() throws SQLException {
+        Statement stmt = conn.createStatement();
+        stmt.execute("DELETE FROM Livres");
         conn.close();
     }
 }
