@@ -1,3 +1,36 @@
-# Start from official Jenkins LTS image
 FROM jenkins/jenkins:lts
-docker build -t my-jenkins .
+
+USER root
+
+# Installation de Docker CLI pour permettre à Jenkins de gérer les agents
+RUN apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    curl \
+    gnupg \
+    lsb-release \
+    && curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg \
+    && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null \
+    && apt-get update \
+    && apt-get install -y docker-ce-cli \
+    && rm -rf /var/lib/apt/lists/*
+
+# Installation de Maven et JDK (optionnel, mais utile)
+RUN apt-get update && apt-get install -y \
+    maven \
+    && rm -rf /var/lib/apt/lists/*
+
+# Préinstallation de plugins Jenkins utiles
+RUN jenkins-plugin-cli --plugins \
+    git \
+    workflow-aggregator \
+    docker-workflow \
+    junit \
+    maven-plugin \
+    credentials-binding \
+    ssh-agent
+
+USER jenkins
+
+# Configuration par défaut
+ENV JAVA_OPTS="-Djenkins. install.runSetupWizard=false"

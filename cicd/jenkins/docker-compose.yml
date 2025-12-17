@@ -2,12 +2,67 @@ version: "3.8"
 
 services:
   jenkins:
-    image: jenkins/jenkins:lts
-    container_name: jenkins
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: jenkins-controller
+    restart: unless-stopped
+    privileged: true
+    user: root
     ports:
-      - "8084:8080"
+      - "8080:8080" # Interface web Jenkins
+      - "50000:50000" # Port pour les agents JNLP
     volumes:
-      - jenkins_home:/var/jenkins_home
+      - jenkins-data:/var/jenkins_home
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./../../:/workspace:Z
+    environment:
+      - JENKINS_ADMIN_ID=admin
+      - JENKINS_ADMIN_PASSWORD=admin123
+      - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+    networks:
+      - jenkins-network
+
+  mysql:
+    build:
+      context: .
+      dockerfile: Dockerfile.mysql
+    container_name: mysql-db
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: bibliotheque
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - jenkins-network
+
+  jenkins-agent-linux:
+    build:
+      context: ../agents/linux
+      dockerfile: Dockerfile
+    container_name: jenkins-agent-linux
+    restart: unless-stopped
+    depends_on:
+      - jenkins
+      - mysql
+    volumes:
+      - ./../../:/workspace:Z
+      - agent-workdir:/home/jenkins/agent
+    environment:
+      - JENKINS_URL=http://jenkins-controller:8080
+    networks:
+      - jenkins-network
+    # On laisse le conteneur tourner pour connexion manuelle
+    command: tail -f /dev/null
 
 volumes:
-  jenkins_home:
+  jenkins-data:
+  mysql-data:
+  agent-workdir:
+
+networks:
+  jenkins-network:
+    driver: bridge
