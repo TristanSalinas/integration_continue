@@ -26,6 +26,7 @@ public class Emprunt {
             stmtEmprunt.setDate(4, Date.valueOf(dateEmprunt.plusWeeks(dureeSemaines)));
 
             stmtEmprunt.executeUpdate();
+
             System.out.println("Nouvel emprunt ajouté : client " + idClient + ", livre " + idLivre);
 
             PreparedStatement stmtDisponible = conn.prepareStatement(updateLivreSql);
@@ -64,10 +65,41 @@ public class Emprunt {
     }
 
     public void deleteByLivre(Integer idLivre) throws SQLException {
-        String sql = "DELETE FROM Emprunts WHERE id_livre = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, idLivre);
-            ps.executeUpdate();
+        String sqlDelete = "DELETE FROM Emprunts WHERE id_livre = ?";
+        String sqlUpdate = "UPDATE Livres SET disponible = TRUE WHERE id_livre = ?";
+
+        try {
+            conn.setAutoCommit(false);
+            try (PreparedStatement psDelete = conn.prepareStatement(sqlDelete)) {
+                psDelete.setInt(1, idLivre);
+                psDelete.executeUpdate();
+            }
+
+            try (PreparedStatement psUpdate = conn.prepareStatement(sqlUpdate)) {
+                psUpdate.setInt(1, idLivre);
+                psUpdate.executeUpdate();
+            }
+            conn.commit();
+
+        } catch (SQLException e) {
+            if (conn != null) {
+                try {
+                    conn.rollback();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
+            }
+            throw e;
+
+        } finally {
+            if (conn != null) {
+                try {
+                    conn.setAutoCommit(true);
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
+
 }

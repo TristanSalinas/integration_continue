@@ -63,6 +63,8 @@ public class EmpruntTest {
   @AfterAll
   static void closeConn() throws SQLException {
     Statement stmt = conn.createStatement();
+    stmt.execute("DELETE FROM Livres");
+    stmt.execute("DELETE FROM Clients");
     stmt.execute("DELETE FROM Emprunts");
     conn.close();
   }
