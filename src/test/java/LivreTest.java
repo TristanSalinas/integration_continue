@@ -1,5 +1,4 @@
 import bibliotheque.Livre;
-
 import java.sql.Statement;
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
@@ -7,7 +6,6 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LivreTest {
-
     private static Connection conn;
     private Livre livre;
 
@@ -18,7 +16,11 @@ public class LivreTest {
     }
 
     @BeforeEach
-    void setup() {
+    void setup() throws SQLException {
+        // Nettoyer la table AVANT chaque test
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM Livres");
+        }
         livre = new Livre(conn);
     }
 
@@ -31,6 +33,10 @@ public class LivreTest {
 
     @Test
     void testDeleteLivre() throws SQLException {
+        // D'abord AJOUTER le livre avant de le supprimer !
+        livre.addToBDD("TestLivre", "AuteurTest");
+
+        // Maintenant on peut le supprimer
         livre.deleteFromBDD("TestLivre", "AuteurTest");
         Integer id = livre.findId("TestLivre", "AuteurTest");
         assertNull(id, "Le livre devrait avoir été supprimé !");
@@ -38,8 +44,9 @@ public class LivreTest {
 
     @AfterAll
     static void closeConn() throws SQLException {
-        Statement stmt = conn.createStatement();
-        stmt.execute("DELETE FROM Livres");
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM Livres");
+        }
         conn.close();
     }
 }
