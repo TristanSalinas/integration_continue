@@ -56,7 +56,6 @@ services:
     networks:
       - jenkins-network
     # On laisse le conteneur tourner pour connexion manuelle
-    command: tail -f /dev/null
 
 volumes:
   jenkins-data:
