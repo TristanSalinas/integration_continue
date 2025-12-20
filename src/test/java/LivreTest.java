@@ -6,22 +6,29 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LivreTest {
-    private static Connection conn;
+    private Connection conn;
     private Livre livre;
-
-    @BeforeAll
-    static void initConnection() throws SQLException {
-        conn = bibliotheque.BDDbilbio.getConnection();
-        assertNotNull(conn, "Connexion à la BDD échouée !");
-    }
 
     @BeforeEach
     void setup() throws SQLException {
+        // Créer une NOUVELLE connexion pour chaque test
+        conn = bibliotheque.BDDbilbio.getConnection();
+        assertNotNull(conn, "Connexion à la BDD échouée !");
+
         // Nettoyer la table AVANT chaque test
         try (Statement stmt = conn.createStatement()) {
             stmt.execute("DELETE FROM Livres");
         }
+
         livre = new Livre(conn);
+    }
+
+    @AfterEach
+    void tearDown() throws SQLException {
+        // Fermer la connexion APRÈS chaque test
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+        }
     }
 
     @Test
@@ -40,13 +47,5 @@ public class LivreTest {
         livre.deleteFromBDD("TestLivre", "AuteurTest");
         Integer id = livre.findId("TestLivre", "AuteurTest");
         assertNull(id, "Le livre devrait avoir été supprimé !");
-    }
-
-    @AfterAll
-    static void closeConn() throws SQLException {
-        try (Statement stmt = conn.createStatement()) {
-            stmt.execute("DELETE FROM Livres");
-        }
-        conn.close();
     }
 }
