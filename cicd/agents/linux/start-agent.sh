@@ -2,7 +2,7 @@
 # Variables d'environnement à définir
 JENKINS_URL=${JENKINS_URL:-"http://jenkins-controller:8080"}
 AGENT_NAME=${AGENT_NAME:-"linux-agent"}
-AGENT_SECRET=${AGENT_SECRET:-"553094fae5b50151030997d14775da34588d33cd90448b381465846dbf320c2c"}
+AGENT_SECRET=${AGENT_SECRET:-"REMPLACER LE SECRET ICI"}
 AGENT_WORKDIR=${AGENT_WORKDIR:-"/home/jenkins/agent"}
 
 echo "🚀 Démarrage de l'agent Jenkins..."
