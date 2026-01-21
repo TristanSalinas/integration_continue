@@ -27,9 +27,9 @@ public class EmpruntTest {
 
     try {
       Statement stmt = conn.createStatement();
+      stmt.execute("DELETE FROM Emprunts");
       stmt.execute("DELETE FROM Clients");
       stmt.execute("DELETE FROM Livres");
-      stmt.execute("DELETE FROM Emprunts");
       client = new Client(conn);
       client.addToBDD("Dupont", "Jean");
       livre = new Livre(conn);
