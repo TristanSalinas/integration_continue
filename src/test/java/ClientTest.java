@@ -18,6 +18,7 @@ public class ClientTest {
 
   @BeforeAll
   static void initConnection() throws SQLException {
+    System.out.println("On est dans client test before all");
     conn = bibliotheque.BDDbilbio.getConnection();
     assertNotNull(conn, "Connexion à la BDD échouée !");
   }

@@ -12,6 +12,8 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
     <dependencies>
@@ -32,7 +34,32 @@
     </dependencies>
 
     <build>
+        <finalName>agent</finalName>
+
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <!-- Timeout global : 60 secondes par test -->
+                    <forkedProcessTimeoutInSeconds>60</forkedProcessTimeoutInSeconds>
+                    
+                    <!-- Afficher plus de détails dans les logs -->
+                    <trimStackTrace>false</trimStackTrace>
+                    <useFile>false</useFile>
+                    <reportFormat>plain</reportFormat>
+                    
+                    <!-- Variables MySQL passées aux tests -->
+                    <systemPropertyVariables>
+                        <mysql.host>${mysql.host}</mysql.host>
+                        <mysql.port>${mysql.port}</mysql.port>
+                        <mysql.database>${mysql.database}</mysql.database>
+                        <mysql.user>${mysql.user}</mysql.user>
+                        <mysql.password>${mysql.password}</mysql.password>
+                    </systemPropertyVariables>
+                </configuration>
+            </plugin>
             <!-- Plugin pour créer un JAR exécutable avec la classe Main -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

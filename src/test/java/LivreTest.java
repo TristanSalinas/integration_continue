@@ -1,5 +1,4 @@
 import bibliotheque.Livre;
-
 import java.sql.Statement;
 import org.junit.jupiter.api.*;
 import java.sql.Connection;
@@ -7,19 +6,29 @@ import java.sql.SQLException;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LivreTest {
-
-    private static Connection conn;
+    private Connection conn;
     private Livre livre;
 
-    @BeforeAll
-    static void initConnection() throws SQLException {
+    @BeforeEach
+    void setup() throws SQLException {
+        // Créer une NOUVELLE connexion pour chaque test
         conn = bibliotheque.BDDbilbio.getConnection();
         assertNotNull(conn, "Connexion à la BDD échouée !");
+
+        // Nettoyer la table AVANT chaque test
+        try (Statement stmt = conn.createStatement()) {
+            stmt.execute("DELETE FROM Livres");
+        }
+
+        livre = new Livre(conn);
     }
 
-    @BeforeEach
-    void setup() {
-        livre = new Livre(conn);
+    @AfterEach
+    void tearDown() throws SQLException {
+        // Fermer la connexion APRÈS chaque test
+        if (conn != null && !conn.isClosed()) {
+            conn.close();
+        }
     }
 
     @Test
@@ -31,15 +40,12 @@ public class LivreTest {
 
     @Test
     void testDeleteLivre() throws SQLException {
+        // D'abord AJOUTER le livre avant de le supprimer !
+        livre.addToBDD("TestLivre", "AuteurTest");
+
+        // Maintenant on peut le supprimer
         livre.deleteFromBDD("TestLivre", "AuteurTest");
         Integer id = livre.findId("TestLivre", "AuteurTest");
         assertNull(id, "Le livre devrait avoir été supprimé !");
-    }
-
-    @AfterAll
-    static void closeConn() throws SQLException {
-        Statement stmt = conn.createStatement();
-        stmt.execute("DELETE FROM Livres");
-        conn.close();
     }
 }
