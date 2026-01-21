@@ -27,7 +27,9 @@ public class ClientTest {
   void setup() {
     try {
       Statement stmt = conn.createStatement();
+      stmt.execute("DELETE FROM Emprunts");
       stmt.execute("DELETE FROM Clients");
+      stmt.execute("DELETE FROM Livres");
     } catch (SQLException e) {
       e.printStackTrace();
     }
@@ -58,6 +60,7 @@ public class ClientTest {
   @AfterAll
   static void closeConn() throws SQLException {
     Statement stmt = conn.createStatement();
+    stmt.execute("DELETE FROM Emprunts");
     stmt.execute("DELETE FROM Clients");
     conn.close();
   }
