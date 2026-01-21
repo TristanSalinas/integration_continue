@@ -39,12 +39,12 @@ services:
     networks:
       - jenkins-network
     # j'ai eu des problème d'espace a des moments, je ne sais pas si cette commande est encore utile
-    command: >
-      --default-authentication-plugin=mysql_native_password
-      --innodb-use-native-aio=0
-      --innodb-flush-method=fsync
-      --innodb-log-file-size=5M
-      --innodb-buffer-pool-size=64M
+    # command: >
+    #   --default-authentication-plugin=mysql_native_password
+    #   --innodb-use-native-aio=0
+    #   --innodb-flush-method=fsync
+    #   --innodb-log-file-size=5M
+    #   --innodb-buffer-pool-size=64M
 
   jenkins-agent-linux:
     build:
