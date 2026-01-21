@@ -17,8 +17,6 @@ public class LivreTest {
 
         // Nettoyer la table AVANT chaque test
         try (Statement stmt = conn.createStatement()) {
-            stmt.execute("DELETE FROM Emprunts");
-            stmt.execute("DELETE FROM Clients");
             stmt.execute("DELETE FROM Livres");
         }
 
