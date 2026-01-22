@@ -2,8 +2,8 @@ FROM jenkins/jenkins:lts
 
 USER root
 
-# Installation de Docker CLI pour permettre à Jenkins de gérer les agents
 RUN apt-get update && apt-get install -y \
+    wget \
     apt-transport-https \
     ca-certificates \
     curl \
@@ -15,11 +15,14 @@ RUN apt-get update && apt-get install -y \
     && apt-get install -y docker-ce-cli \
     && rm -rf /var/lib/apt/lists/*
 
-# Installation de Maven et JDK (optionnel, mais utile)
 RUN apt-get update && apt-get install -y \
     maven \
     && rm -rf /var/lib/apt/lists/*
 
+RUN mkdir -p /opt/maven \
+    && wget https://archive.apache.org/dist/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz -O /tmp/apache-maven-3.9.6-bin.tar.gz \
+    && tar -xzf /tmp/apache-maven-3.9.6-bin.tar.gz -C /opt/maven \
+    && rm /tmp/apache-maven-3.9.6-bin.tar.gz
 
 RUN jenkins-plugin-cli --plugins \
     git \

@@ -19,13 +19,18 @@ tool:
     installations:
       - name: "Maven_3.9.6"
         home: "/opt/maven/apache-maven-3.9.6"
+  jdk:
+    installations:
+      - name: "JDK_17"
+        home: "/usr/lib/jvm/java-17-openjdk"
 
 credentials:
   system:
     domainCredentials:
       - credentials:
-          - string:
-              id: "github-token"
-              description: "GitHub access token"
+          - usernamePassword:
+              id: "my-github-credentials"
+              description: "GitHub username and token"
+              username: "${GITHUB_USERNAME}"
+              password: "${JENKINS_GITHUB_TOKEN}"
               scope: GLOBAL
-              secret: "${JENKINS_GITHUB_TOKEN}"
