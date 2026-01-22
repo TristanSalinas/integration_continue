@@ -19,11 +19,10 @@ RUN useradd -m -d /home/jenkins -s /bin/bash jenkins
 RUN mkdir -p /home/jenkins/agent && \
     chown -R jenkins:jenkins /home/jenkins
 
-# Copier le script de démarrage
-COPY start-agent.sh /usr/local/bin/start-agent.sh
-RUN chmod +x /usr/local/bin/start-agent.sh
+COPY jenkins_connect.sh /usr/local/bin/jenkins_connect.sh
+RUN sed -i 's/\r$//' /usr/local/bin/jenkins_connect.sh && chmod +x /usr/local/bin/jenkins_connect.sh
 
 USER jenkins
 WORKDIR /home/jenkins
 
-CMD ["/usr/local/bin/start-agent.sh"]
+CMD ["sleep", "infinity"]

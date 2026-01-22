@@ -3,7 +3,7 @@ version: "3.8"
 services:
   jenkins:
     build:
-      context: .
+      context: ./jenkins
       dockerfile: Dockerfile
     container_name: jenkins-controller
     restart: unless-stopped
@@ -14,18 +14,36 @@ services:
       - "50000:50000" # Port pour les agents JNLP
     volumes:
       - jenkins-data:/var/jenkins_home
-      - /var/run/docker.sock:/var/run/docker.sock
-      - ./../../:/workspace:Z
+      - /var/run/docker.sock:/var/run/docker.sock # donne les clefs de docker a jenkins
+      - ./../:/workspace:Z
+      - ./jenkins/casc.yml:/var/jenkins_home/casc.yml:ro # pour creer des trucs au lancement grace au plugin configuration-as-code
     environment:
       - JENKINS_ADMIN_ID=admin
       - JENKINS_ADMIN_PASSWORD=admin123
       - JAVA_OPTS=-Djenkins.install.runSetupWizard=false -Dhudson.security.csrf.GlobalCrumbIssuerConfiguration.DISABLE_CSRF_PROTECTION=true
+      - CASC_JENKINS_CONFIG=/var/jenkins_home/casc.yml
+    networks:
+      - jenkins-network
+
+  jenkins-agent-linux:
+    build:
+      context: ./agents/linux
+      dockerfile: Dockerfile
+    container_name: jenkins-agent-linux
+    restart: unless-stopped
+    depends_on:
+      - jenkins
+      - mysql
+    environment:
+      - JENKINS_URL=http://jenkins-controller:8080
+      - AGENT_NAME=linux-agent
+      - AGENT_WORKDIR=/home/jenkins/agent
     networks:
       - jenkins-network
 
   mysql:
     build:
-      context: .
+      context: ./mysql
       dockerfile: Dockerfile.mysql
     container_name: mysql-db
     restart: unless-stopped
@@ -38,31 +56,6 @@ services:
       - mysql-data:/var/lib/mysql
     networks:
       - jenkins-network
-    # j'ai eu des problème d'espace a des moments, je ne sais pas si cette commande est encore utile
-    # command: >
-    #   --default-authentication-plugin=mysql_native_password
-    #   --innodb-use-native-aio=0
-    #   --innodb-flush-method=fsync
-    #   --innodb-log-file-size=5M
-    #   --innodb-buffer-pool-size=64M
-
-  jenkins-agent-linux:
-    build:
-      context: ../agents/linux
-      dockerfile: Dockerfile
-    container_name: jenkins-agent-linux
-    restart: unless-stopped
-    depends_on:
-      - jenkins
-      - mysql
-    volumes:
-      - ./../../:/workspace:Z
-      - agent-workdir:/home/jenkins/agent
-    environment:
-      - JENKINS_URL=http://jenkins-controller:8080
-    networks:
-      - jenkins-network
-    # On laisse le conteneur tourner pour connexion manuelle
 
 volumes:
   jenkins-data:

@@ -1,0 +1,16 @@
+jenkins:
+  nodes:
+    - permanent:
+        name: "linux-agent"
+        labelString: "linux ubuntu"
+        remoteFS: "/home/jenkins/agent"
+        numExecutors: 1
+        mode: NORMAL
+        retentionStrategy: "always"
+        launcher:
+          inbound:
+            workDirSettings:
+              disabled: false
+              internalDir: "remoting"
+              failIfWorkDirIsMissing: false
+              workDirPath: "/home/jenkins/agent"

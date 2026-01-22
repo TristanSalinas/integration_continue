@@ -20,10 +20,11 @@ RUN apt-get update && apt-get install -y \
     maven \
     && rm -rf /var/lib/apt/lists/*
 
-# Préinstallation de plugins Jenkins utiles
+
 RUN jenkins-plugin-cli --plugins \
     git \
     workflow-aggregator \
+    configuration-as-code:latest \
     docker-workflow \
     junit \
     maven-plugin \
