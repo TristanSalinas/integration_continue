@@ -55,6 +55,11 @@ public class ClientTest {
     assertNull(id, "Le Client n'a pas été supprimé après insertion !");
   }
 
+  @Test
+  void failingTest() throws SQLException {
+    assertTrue(false);
+  }
+
   @AfterAll
   static void closeConn() throws SQLException {
     Statement stmt = conn.createStatement();

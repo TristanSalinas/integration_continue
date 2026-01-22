@@ -14,3 +14,18 @@ jenkins:
               internalDir: "remoting"
               failIfWorkDirIsMissing: false
               workDirPath: "/home/jenkins/agent"
+tool:
+  maven:
+    installations:
+      - name: "Maven_3.9.6"
+        home: "/opt/maven/apache-maven-3.9.6"
+
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - string:
+              id: "github-token"
+              description: "GitHub access token"
+              scope: GLOBAL
+              secret: "${JENKINS_GITHUB_TOKEN}"

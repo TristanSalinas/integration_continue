@@ -1,5 +1,17 @@
 # Set up du projet
 
+## Etape 1
+
+Cloner le repo
+
+```
+git clone
+```
+
+```
+docker exec -it jenkins-agent-linux /usr/local/bin/jenkins_connect.sh e065ad1fd129bc9a1d5d7c7656966c0ad934d50f6a85f62d9d5367063cceb86d
+```
+
 ### Configurer le projet
 
 - lancer les trois docker dans cicd/jenkins avec docker-compose

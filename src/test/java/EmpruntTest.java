@@ -5,7 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.time.Instant;
+
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -27,9 +27,10 @@ public class EmpruntTest {
 
     try {
       Statement stmt = conn.createStatement();
+      stmt.execute("DELETE FROM Emprunts");
       stmt.execute("DELETE FROM Clients");
       stmt.execute("DELETE FROM Livres");
-      stmt.execute("DELETE FROM Emprunts");
+
       client = new Client(conn);
       client.addToBDD("Dupont", "Jean");
       livre = new Livre(conn);
@@ -63,8 +64,6 @@ public class EmpruntTest {
   @AfterAll
   static void closeConn() throws SQLException {
     Statement stmt = conn.createStatement();
-    stmt.execute("DELETE FROM Livres");
-    stmt.execute("DELETE FROM Clients");
     stmt.execute("DELETE FROM Emprunts");
     conn.close();
   }
